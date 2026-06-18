@@ -6,4 +6,5 @@ venv/
 
 teste.py
 teste_repository.py
-teste_use_case.py
+teste_use_case.py__pycache__/
+*.pyc
