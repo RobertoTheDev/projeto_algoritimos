@@ -4,6 +4,7 @@ from application.interfaces.corredor_repository import (
 
 from domain.entities.corredor import Corredor
 
+
 class TxtCorredorRepository(CorredorRepository):
 
     def __init__(self, arquivo_manager):
@@ -12,10 +13,13 @@ class TxtCorredorRepository(CorredorRepository):
     def salvar(self, corredor):
         linhas = self.arquivo_manager.ler_linhas()
 
+        if linhas and not linhas[-1].endswith("\n"):
+            linhas[-1] += "\n"
+
         linhas.append(
             corredor.para_linha() + "\n"
         )
-        
+
         self.arquivo_manager.escrever_linhas(linhas)
 
     def listar(self):
@@ -23,13 +27,14 @@ class TxtCorredorRepository(CorredorRepository):
 
         corredores = []
 
-        for linhas in linhas:
-            corredores.append(
-                Corredor.de_linha(linhas)
-            )
+        for linha in linhas:
+            corredor = Corredor.de_linha(linha)
+
+            if corredor is not None:
+                corredores.append(corredor)
 
         return corredores
-    
+
     def remover(self, nome):
         corredores = self.listar()
 

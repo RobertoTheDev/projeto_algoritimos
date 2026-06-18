@@ -33,7 +33,12 @@ class Corredor:
 
     @classmethod
     def de_linha(cls, linha):
-        nome, data_nascimento, telefone, percurso = linha.strip().split(";")
+        partes = linha.strip().split(";")
+
+        if len(partes) != 4:
+            return None
+
+        nome, data_nascimento, telefone, percurso = partes
 
         return cls(
             nome,
