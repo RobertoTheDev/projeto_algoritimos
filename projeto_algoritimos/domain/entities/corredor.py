@@ -1,21 +1,30 @@
+
 from datetime import datetime
+
+from shared.validators import validar_corredor
 
 
 class Corredor:
     def __init__(self, nome, data_nascimento, telefone, percurso):
-        self.nome = nome
+        percurso_validado = validar_corredor(
+            nome,
+            data_nascimento,
+            telefone,
+            percurso,
+        )
+
+        self.nome = nome.strip()
         self.data_nascimento = data_nascimento
-        self.telefone = telefone
-        self.percurso = int(percurso)
+        self.telefone = telefone.strip()
+        self.percurso = percurso_validado
 
     def calcular_idade(self):
         nascimento = datetime.strptime(
             self.data_nascimento,
-            "%d/%m/%Y"
+            "%d/%m/%Y",
         )
 
         hoje = datetime.today()
-
         idade = hoje.year - nascimento.year
 
         if (hoje.month, hoje.day) < (nascimento.month, nascimento.day):
@@ -40,12 +49,16 @@ class Corredor:
 
         nome, data_nascimento, telefone, percurso = partes
 
-        return cls(
-            nome,
-            data_nascimento,
-            telefone,
-            int(percurso)
-        )
+        try:
+            return cls(
+                nome,
+                data_nascimento,
+                telefone,
+                percurso,
+            )
+        except (ValueError, TypeError):
+            # Ignora registros inválidos sem interromper a listagem.
+            return None
 
     def __str__(self):
         return (
